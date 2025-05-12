@@ -1,5 +1,4 @@
 import { Link } from "react-router";
-import React, { useState, useEffect } from "react";
 import ToggleRoster from "./ToggleRoster.jsx";
 
 const PokeCard = ({ pokemon, loadedPokemon }) => {
@@ -24,16 +23,16 @@ const PokeCard = ({ pokemon, loadedPokemon }) => {
           <ToggleRoster pokemon={pokemon} />
         </div>
 
-        <p className=" mb-2">
+        {/* <p className=" mb-2">
           Type: {pokemon.types.map((type) => type.type.name).join(", ")}
         </p>
 
-        <div className="grid grid-cols-2 gap-2 text-sm mb-4 ">
+         <div className="grid grid-cols-2 gap-2 text-sm mb-4 ">
           <p>HP: {pokemon.stats[0].base_stat}</p>
           <p>Attack: {pokemon.stats[1].base_stat}</p>
           <p>Defense: {pokemon.stats[2].base_stat}</p>
           <p>Speed: {pokemon.stats[5].base_stat}</p>
-        </div>
+        </div> */}
       </div>
     </Link>
   );
