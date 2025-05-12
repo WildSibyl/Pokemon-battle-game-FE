@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import imgUnstored from "../assets/favheartunselected.png";
 import imgHoveredUnstored from "../assets/favhearthovered.png";
 import imgStored from "../assets/favheartselected.png";
-import { useLocalStorage } from "../context/RosterContext";
+import { RosterContext } from "../context/RosterContext";
 
 const ToggleRoster = ({ pokemon }) => {
   const [hovered, setHovered] = useState(false);
-  const { toggleRoster, isInRoster } = useLocalStorage();
+  const { toggleRoster, isInRoster } = useContext(RosterContext);
   const isFavorite = isInRoster(pokemon.id);
 
   return (
