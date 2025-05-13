@@ -7,12 +7,8 @@ const RosterPokeCard = ({ pokemon }) => {
   return (
     <div
       onClick={() => toggleSelection(pokemon)}
-      className={`bg-base-100 rounded-lg shadow-lg p-4 transform hover:scale-105 transition-transform cursor-pointer
-        ${
-          isSelected
-            ? "border-4 border-yellow-400"
-            : "border-2 border-transparent"
-        }`}
+      className={`rounded-lg shadow-lg p-4 flex flex-col items-center justify-center transform hover:scale-105 transition-transform cursor-pointer
+        ${isSelected ? "bg-yellow-500" : "bg-base-100"}`}
     >
       <img
         src={pokemon.image}

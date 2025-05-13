@@ -9,7 +9,9 @@ const Roster = () => {
 
   return (
     <div className="flex flex-col items-center justify-center px-4">
-      <p className="text-lg mb-6">Here are your Pokémon, ready for battle!</p>
+      <p className="text-3xl font-bold m-4">
+        Here are your Pokémon, ready for battle!
+      </p>
 
       {roster.length === 0 ? (
         <p className="text-gray-500">No Pokémon in your roster yet.</p>
