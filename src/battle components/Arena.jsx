@@ -1,5 +1,4 @@
 import { useBattle } from "../context/BattleContext";
-import OpponentRow from "./OpponentRow";
 
 const Arena = () => {
   const { setBattleStarted } = useBattle();
