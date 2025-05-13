@@ -4,6 +4,7 @@ import Home from "./pages/Home.jsx";
 import Details from "./pages/Details.jsx";
 import Roster from "./pages/Roster.jsx";
 import Battle from "./pages/Battle.jsx";
+import Leaderboard from "./pages/Leaderboard.jsx";
 import { RosterProvider } from "./context/RosterContext.jsx";
 
 const App = () => {
@@ -16,6 +17,7 @@ const App = () => {
             <Route path="/pokemon-details/:id" element={<Details />} />
             <Route path="/pokemon-roster" element={<Roster />} />
             <Route path="/battle" element={<Battle />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="*" element={<div>404 Not Found</div>} />
           </Route>
         </Routes>

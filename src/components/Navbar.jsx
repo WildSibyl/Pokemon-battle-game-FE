@@ -35,6 +35,16 @@ const Navbar = () => {
           <h3 className="align-middle self-center">Battle!</h3>
         </div>
       </Link>
+      <Link to="/leaderboard">
+        <div className="active flex font-bold pr-3 hover:bg-red-300">
+          <img
+            className="h-[50px] p-3"
+            src={pokeballIcon}
+            alt="pokeball icon"
+          />
+          <h3 className="align-middle self-center">Leaderboard</h3>
+        </div>
+      </Link>
     </nav>
   );
 };

@@ -1,46 +1,50 @@
 import { useState } from "react";
 import { usePokemon } from "../hooks/usePokeData";
+import { useBattle } from "../context/BattleContext";
+import questionMark from "../assets/questionmark.png"; // Assuming you have a question mark image
 
-const getRandomId = () => Math.floor(Math.random() * 15011) + 1; //min 1, max 1024
+const getRandomId = () => Math.floor(Math.random() * 150) + 1; //min 1, max 1024
 
 const RandomOpponent = () => {
   // Generate the random ID only once on initial render
   const [pokeId] = useState(() => getRandomId());
   const { pokedata, loading, error } = usePokemon(pokeId);
+  const { battleStarted } = useBattle();
 
   if (loading) return <p>Loading opponent...</p>;
   if (error) return <p className="text-red-500">Error: {error.message}</p>;
   if (!pokedata) return null; // fallback safety
 
-  const imageSrc =
-    pokedata.sprites.other["official-artwork"].front_default ||
-    pokedata.sprites.front_default;
+  const imageSrc = battleStarted
+    ? pokedata.sprites.other["official-artwork"].front_default ||
+      pokedata.sprites.front_default
+    : questionMark;
 
   return (
     <div
-      className="bg-base-100 rounded-lg shadow-lg p-4 transform hover:scale-105 transition-transform"
-      data-pokemon-id={pokedata.id}
+      className={`flip-card w-32 h-40 relative ${
+        battleStarted ? "flipped" : ""
+      }`}
     >
-      <img
-        src={imageSrc}
-        alt={pokedata.name}
-        className="w-full h-48 object-contain mb-4"
-      />
-
-      <div className="flex w-full justify-between">
-        <h3 className="text-xl font-bold capitalize mb-2">{pokedata.name}</h3>
+      <div className="flip-inner w-full h-full relative">
+        {/* Front */}
+        <div className="flip-front bg-base-100 rounded-lg p-2 flex flex-col items-center justify-center transform hover:scale-105 transition-transform">
+          <img
+            src={questionMark}
+            alt="Mystery"
+            className="w-24 h-24 object-contain mb-2"
+          />
+        </div>
+        {/* Back */}
+        <div className="flip-back bg-base-100 rounded-lg p-2 flex flex-col items-center justify-center transform hover:scale-105 transition-transform">
+          <img
+            src={pokedata.sprites.other["official-artwork"].front_default}
+            alt={pokedata.name}
+            className="w-24 h-24 object-contain mb-2"
+          />
+          <h3 className="text-lg font-semibold capitalize">{pokedata.name}</h3>
+        </div>
       </div>
-
-      {/* <p className=" mb-2">
-          Type: {pokemon.types.map((type) => type.type.name).join(", ")}
-        </p>
-
-         <div className="grid grid-cols-2 gap-2 text-sm mb-4 ">
-          <p>HP: {pokemon.stats[0].base_stat}</p>
-          <p>Attack: {pokemon.stats[1].base_stat}</p>
-          <p>Defense: {pokemon.stats[2].base_stat}</p>
-          <p>Speed: {pokemon.stats[5].base_stat}</p>
-        </div> */}
     </div>
   );
 };
