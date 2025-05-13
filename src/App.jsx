@@ -13,7 +13,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
-            <Route path="/pokemon-details/:pokeId" element={<Details />} />
+            <Route path="/pokemon-details/:id" element={<Details />} />
             <Route path="/pokemon-roster" element={<Roster />} />
             <Route path="/battle" element={<Battle />} />
             <Route path="*" element={<div>404 Not Found</div>} />
