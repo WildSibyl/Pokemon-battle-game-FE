@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
-import imgUnstored from "../assets/favheartunselected.png";
-import imgHoveredUnstored from "../assets/favhearthovered.png";
-import imgStored from "../assets/favheartselected.png";
+import imgUnstored from "../assets/pokeunselected.png";
+import imgHoveredUnstored from "../assets/pokehovered.png";
+import imgStored from "../assets/pokeselected.png";
 import { RosterContext } from "../context/RosterContext";
 
 const ToggleRoster = ({ pokemon }) => {

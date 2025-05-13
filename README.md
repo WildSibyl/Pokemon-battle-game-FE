@@ -39,6 +39,10 @@ src/
 
 ## Instructions of use
 
+clone the repository
+
+npm i
+
 create an .env file with
 
 VITE_APP_POKEMON_BATTLE_API_URL=http://localhost:8080
