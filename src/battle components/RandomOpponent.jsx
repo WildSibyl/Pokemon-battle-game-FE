@@ -1,15 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePokemon } from "../hooks/usePokeData";
 import { useBattle } from "../context/BattleContext";
 import questionMark from "../assets/questionmark.png"; // Assuming you have a question mark image
 
 const getRandomId = () => Math.floor(Math.random() * 150) + 1; //min 1, max 1024
 
-const RandomOpponent = () => {
+const RandomOpponent = ({ onReady }) => {
   // Generate the random ID only once on initial render
   const [pokeId] = useState(() => getRandomId());
   const { pokedata, loading, error } = usePokemon(pokeId);
   const { battleStarted } = useBattle();
+
+  useEffect(() => {
+    if (pokedata && onReady) {
+      const formatted = {
+        name: pokedata.name,
+        image: pokedata.sprites.other["official-artwork"].front_default,
+        hp: pokedata.stats[0].base_stat,
+        attack: pokedata.stats[1].base_stat,
+        speed: pokedata.stats[5].base_stat,
+      };
+      onReady(formatted);
+    }
+  }, [pokedata]);
 
   if (loading) return <p>Loading opponent...</p>;
   if (error) return <p className="text-red-500">Error: {error.message}</p>;

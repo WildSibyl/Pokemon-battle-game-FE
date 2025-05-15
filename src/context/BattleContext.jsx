@@ -5,6 +5,8 @@ const BattleContext = createContext();
 export const BattleProvider = ({ children }) => {
   const [selectedRoster, setSelectedRoster] = useState([]);
   const [battleStarted, setBattleStarted] = useState(false);
+  const [opponents, setOpponents] = useState([]);
+  const [battleResults, setBattleResults] = useState([]);
 
   const toggleSelection = (pokemon) => {
     setSelectedRoster((prev) => {
@@ -24,6 +26,10 @@ export const BattleProvider = ({ children }) => {
         toggleSelection,
         battleStarted,
         setBattleStarted,
+        opponents,
+        setOpponents,
+        battleResults,
+        setBattleResults,
       }}
     >
       {children}
