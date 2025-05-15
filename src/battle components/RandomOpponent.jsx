@@ -9,7 +9,7 @@ const RandomOpponent = ({ onReady }) => {
   // Generate the random ID only once on initial render
   const [pokeId] = useState(() => getRandomId());
   const { pokedata, loading, error } = usePokemon(pokeId);
-  const { battleStarted, battleInProgress } = useBattle();
+  const { battleStarted, lockArena } = useBattle();
 
   useEffect(() => {
     if (pokedata && onReady) {
@@ -46,7 +46,7 @@ const RandomOpponent = ({ onReady }) => {
         {/* Back */}
         <div
           className={`flip-back rounded-lg p-2 flex flex-col items-center justify-center transform hover:scale-105 transition-transform ${
-            battleInProgress ? "pointer-events-none bg-gray-300" : "bg-base-100"
+            lockArena ? "pointer-events-none bg-gray-300" : "bg-base-100"
           }`}
         >
           <img

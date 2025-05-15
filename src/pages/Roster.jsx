@@ -9,7 +9,7 @@ const Roster = () => {
 
   return (
     <div className="flex flex-col items-center justify-center px-4">
-      <p className="text-3xl font-bold m-4">
+      <p className="text-3xl font-bold m-4 mb-8">
         Here are your Pokémon, ready for battle!
       </p>
 

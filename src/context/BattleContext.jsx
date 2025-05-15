@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const BattleContext = createContext();
 
@@ -9,6 +9,8 @@ export const BattleProvider = ({ children }) => {
   const [battleResults, setBattleResults] = useState([]);
   const [finalScore, setFinalScore] = useState(0);
   const [battleInProgress, setBattleInProgress] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [lockArena, setLockArena] = useState(false);
 
   const toggleSelection = (pokemon) => {
     setSelectedRoster((prev) => {
@@ -37,6 +39,10 @@ export const BattleProvider = ({ children }) => {
         setFinalScore,
         battleInProgress,
         setBattleInProgress,
+        modalOpen,
+        setModalOpen,
+        lockArena,
+        setLockArena,
       }}
     >
       {children}
