@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useBattle } from "../context/BattleContext";
 import OpponentRow from "./OpponentRow";
+import { motion } from "framer-motion";
 
 const Arena = () => {
   const { selectedRoster, opponents, battleResults, setBattleResults } =
