@@ -12,8 +12,8 @@ const Battle = () => {
   return (
     <BattleProvider>
       <div className="flex flex-col md:flex-row items-center justify-center p-4 gap-4">
-        <div className="flex flex-col items-center mb-4 md:w-[25%] md:h-[calc(80vh)]  border border-gray-400 rounded-lg p-4">
-          <p className="text-lg mb-4">Choose your Pokemon!</p>
+        <div className="flex flex-col items-center mb-4 md:w-[25%] md:h-[calc(80vh)] border border-base-100 rounded-lg p-4">
+          <p className="text-lg mb-4">Choose your Pokémon!</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {roster.map((pokemon) => (
               <BattlePokeCard key={pokemon.id} pokemon={pokemon} />
@@ -23,7 +23,7 @@ const Battle = () => {
         <div className="flex flex-col items-center justify-center mb-4 md:w-[50%] md:h-[calc(80vh)] border border-gray-400 rounded-lg p-4">
           <Arena />
         </div>
-        <div className="flex flex-col items-center mb-4 md:w-[25%] md:h-[calc(80vh)] border border-gray-400 rounded-lg p-4">
+        <div className="flex flex-col items-center mb-4 md:w-[25%] md:h-[calc(80vh)] border border-base-100 rounded-lg p-4">
           <p className="text-lg mb-4">Your opponents:</p>
           <OpponentRow />
         </div>

@@ -36,3 +36,13 @@ src/
 ├── layout/ # MainLayout with Navbar + Footer
 ├── pages/ # Route views (Home, Roster, Details, Battle)
 └── App.jsx # Router setup
+
+## Instructions of use
+
+clone the repository
+
+npm i
+
+create an .env file with
+
+VITE_APP_POKEMON_BATTLE_API_URL=http://localhost:8080
