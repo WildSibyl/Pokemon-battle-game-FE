@@ -1,23 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useBattle } from "../context/BattleContext";
 import OpponentRow from "./OpponentRow";
 import { motion } from "framer-motion";
+import ScoreModalForm from "./ScoreModalForm";
+import { createScore } from "../data/scores";
 
 const Arena = () => {
-  const { selectedRoster, opponents, battleResults, setBattleResults } =
-    useBattle();
+  const {
+    selectedRoster,
+    opponents,
+    setOpponents,
+    battleResults,
+    setBattleResults,
+    finalScore,
+    setFinalScore,
+    battleInProgress,
+    setBattleInProgress,
+    battleStarted,
+    setBattleStarted,
+    setSelectedRoster,
+  } = useBattle();
 
   const [hpStages, setHpStages] = useState([]);
-  const [battleInProgress, setBattleInProgress] = useState(false);
+
   const [winnerSides, setWinnerSides] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const startBattle = async () => {
+    setBattleStarted(true);
     setBattleInProgress(true);
     setBattleResults([]);
     setHpStages([]);
     setWinnerSides([]);
 
     const results = [];
+    let score = 0;
+    let winStreak = 0;
 
     for (let i = 0; i < selectedRoster.length; i++) {
       const player = selectedRoster[i];
@@ -45,18 +63,57 @@ const Arena = () => {
       if (playerPower > opponentPower) {
         results.push(`${player.name} wins! 🎉`);
         setWinnerSides((prev) => [...prev, "player"]);
+        winStreak += 1;
+        score += 100 + (winStreak - 1) * 25;
+        //toast.success(`+${score} points!`);
       } else if (playerPower < opponentPower) {
         results.push(`${opponent.name} wins! 😞`);
         setWinnerSides((prev) => [...prev, "opponent"]);
+        winStreak = 0;
+        score += 25;
+        //toast.success(`+${score} points!`);
       } else {
         results.push(`It's a tie between ${player.name} and ${opponent.name}`);
         setWinnerSides((prev) => [...prev, "tie"]);
+        winStreak = 0;
+        score += 50;
+        //toast.success(`+${score} points!`);
       }
     }
+
+    setFinalScore(score);
 
     setBattleResults(results);
     setBattleInProgress(false);
   };
+
+  useEffect(() => {
+    const allBattlesComplete =
+      !battleInProgress &&
+      selectedRoster.length > 0 &&
+      battleResults.length === selectedRoster.length;
+
+    if (allBattlesComplete) {
+      const timer = setTimeout(() => {
+        setModalOpen(true);
+      }, 2000); // 2-second delay
+
+      return () => clearTimeout(timer); // Cleanup on unmount or rerun
+    }
+  }, [battleInProgress, battleResults, selectedRoster]);
+
+  //clean the arena when the modal closes
+  const prevModalOpenRef = useRef();
+
+  useEffect(() => {
+    if (prevModalOpenRef.current && !modalOpen) {
+      // Modal just closed
+      setBattleStarted(false);
+      setSelectedRoster([]);
+      setOpponents([]);
+    }
+    prevModalOpenRef.current = modalOpen;
+  }, [modalOpen]);
 
   return (
     <div className="text-center">
@@ -76,7 +133,7 @@ const Arena = () => {
           return (
             <div
               key={index}
-              className="flex items-center justify-around gap-4 border p-4 rounded-md bg-gray-50 shadow-lg"
+              className="flex items-center justify-around gap-4 border p-4 rounded-md bg-base-100 shadow-lg"
             >
               {/* Player Side */}
               <motion.div
@@ -164,12 +221,26 @@ const Arena = () => {
         disabled={
           selectedRoster.length === 0 ||
           selectedRoster.length !== opponents.length ||
+          battleStarted ||
           battleInProgress
         }
         className="btn btn-primary mt-6 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
       >
         {battleInProgress ? "Battling..." : "Fight!"}
       </button>
+      <ScoreModalForm
+        isOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setBattleStarted(false);
+        }}
+        score={finalScore}
+        onSubmit={(username) => {
+          createScore({ username, score: finalScore });
+          console.log("Submitting score for", username);
+          setModalOpen(false);
+        }}
+      />
     </div>
   );
 };

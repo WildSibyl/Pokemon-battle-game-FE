@@ -1,14 +1,21 @@
 import { useBattle } from "../context/BattleContext";
 
 const RosterPokeCard = ({ pokemon }) => {
-  const { selectedRoster, toggleSelection } = useBattle();
+  const { selectedRoster, toggleSelection, battleInProgress } = useBattle();
   const isSelected = selectedRoster.some((p) => p.name === pokemon.name);
 
   return (
     <div
       onClick={() => toggleSelection(pokemon)}
+      disabled={battleInProgress}
       className={`rounded-lg shadow-lg p-4 flex flex-col items-center justify-center transform hover:scale-105 transition-transform cursor-pointer
-        ${isSelected ? "bg-yellow-500" : "bg-base-100"}`}
+        ${
+          battleInProgress
+            ? "pointer-events-none bg-gray-300"
+            : isSelected
+            ? "bg-yellow-500"
+            : "bg-base-100"
+        }`}
     >
       <img
         src={pokemon.image}
