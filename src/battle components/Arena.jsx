@@ -1,175 +1,130 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useBattle } from "../context/BattleContext";
-import OpponentRow from "./OpponentRow";
-import { motion } from "framer-motion";
+import ScoreModalForm from "./ScoreModalForm";
+import { createScore } from "../data/scores";
+import ArenaEncounter from "./ArenaEncounter";
+import { useBattleLogic } from "../hooks/useBattleLogic";
+import { useModalCleanup } from "../hooks/useModalCleanup";
 
 const Arena = () => {
-  const { selectedRoster, opponents, battleResults, setBattleResults } =
-    useBattle();
+  const {
+    selectedRoster,
+    opponents,
+    setOpponents,
+    battleResults,
+    setBattleResults,
+    finalScore,
+    setFinalScore,
+    battleInProgress,
+    setBattleInProgress,
+    battleStarted,
+    setBattleStarted,
+    setSelectedRoster,
+    modalOpen,
+    setModalOpen,
+    setLockArena,
+  } = useBattle();
 
   const [hpStages, setHpStages] = useState([]);
-  const [battleInProgress, setBattleInProgress] = useState(false);
   const [winnerSides, setWinnerSides] = useState([]);
+  const containerRef = useRef(null);
 
-  const startBattle = async () => {
-    setBattleInProgress(true);
+  const { startBattle } = useBattleLogic({
+    selectedRoster,
+    opponents,
+    setBattleStarted,
+    setBattleResults,
+    setFinalScore,
+    setBattleInProgress,
+    setWinnerSides,
+    setHpStages,
+  });
+
+  useModalCleanup(modalOpen, () => {
+    setBattleStarted(false);
+    setSelectedRoster([]);
+    setOpponents([]);
+  });
+
+  useEffect(() => {
+    const allBattlesComplete =
+      !battleInProgress &&
+      selectedRoster.length > 0 &&
+      battleResults.length === selectedRoster.length;
+
+    if (allBattlesComplete) {
+      setLockArena(true); // lock before modal
+      const timer = setTimeout(() => setModalOpen(true), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [battleInProgress, battleResults, selectedRoster]);
+
+  const resetBattle = () => {
+    setBattleStarted(false);
+    setBattleInProgress(false);
+    setSelectedRoster([]);
+    setOpponents([]);
     setBattleResults([]);
     setHpStages([]);
     setWinnerSides([]);
-
-    const results = [];
-
-    for (let i = 0; i < selectedRoster.length; i++) {
-      const player = selectedRoster[i];
-      const opponent = opponents[i];
-
-      if (!opponent) {
-        results.push("No opponent found");
-        setWinnerSides((prev) => [...prev, "tie"]);
-        continue;
-      }
-
-      const playerPower = player.hp + player.attack + player.speed;
-      const opponentPower = opponent.hp + opponent.attack + opponent.speed;
-
-      // Animate HP stages
-      const updatedHP = [...hpStages];
-      updatedHP[i] = 50;
-      setHpStages(updatedHP);
-      await new Promise((res) => setTimeout(res, 600));
-
-      updatedHP[i] = 0;
-      setHpStages([...updatedHP]);
-      await new Promise((res) => setTimeout(res, 600));
-
-      if (playerPower > opponentPower) {
-        results.push(`${player.name} wins! 🎉`);
-        setWinnerSides((prev) => [...prev, "player"]);
-      } else if (playerPower < opponentPower) {
-        results.push(`${opponent.name} wins! 😞`);
-        setWinnerSides((prev) => [...prev, "opponent"]);
-      } else {
-        results.push(`It's a tie between ${player.name} and ${opponent.name}`);
-        setWinnerSides((prev) => [...prev, "tie"]);
-      }
-    }
-
-    setBattleResults(results);
-    setBattleInProgress(false);
+    setFinalScore(0);
   };
 
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = 0; // Scroll to top
+    }
+  }, [selectedRoster]);
+  console.log("Roster:", selectedRoster.length, "Opponents:", opponents.length);
+
   return (
-    <div className="text-center">
-      <h2 className="text-xl font-bold mb-4">Battle Arena</h2>
-
-      <div className="grid grid-cols-1 gap-6">
-        {selectedRoster.map((player, index) => {
-          const opponent = opponents[index];
-          const result = battleResults[index] || "";
-          const hp = hpStages[index] ?? 100;
-          const winner = winnerSides[index];
-
-          const playerIsWinner = winner === "player";
-          const opponentIsWinner = winner === "opponent";
-          const isTie = winner === "tie";
-
-          return (
-            <div
-              key={index}
-              className="flex items-center justify-around gap-4 border p-4 rounded-md bg-gray-50 shadow-lg"
-            >
-              {/* Player Side */}
-              <motion.div
-                className="flex flex-col items-center"
-                initial={{ x: -100, opacity: 0 }}
-                animate={{
-                  x: 0,
-                  opacity: opponentIsWinner ? 0.3 : 1,
-                  scale: opponentIsWinner ? 0.9 : 1,
-                }}
-                transition={{ duration: 0.5 }}
-              >
-                <motion.img
-                  src={player.image}
-                  alt={player.name}
-                  className="h-20"
-                  animate={playerIsWinner ? { y: [0, -10, 0, -5, 0] } : {}}
-                  transition={
-                    playerIsWinner
-                      ? { duration: 0.6, repeat: Infinity, repeatType: "loop" }
-                      : {}
-                  }
-                />
-                <p className="font-semibold mt-1">{player.name}</p>
-              </motion.div>
-
-              <div className="flex flex-col items-center">
-                <span className="text-2xl mb-2">⚔️</span>
-                <div className="w-24 h-3 bg-red-200 rounded-full overflow-hidden">
-                  <motion.div
-                    className="h-full bg-red-500"
-                    initial={{ width: "100%" }}
-                    animate={{ width: `${hp}%` }}
-                    transition={{ duration: 0.8 }}
-                  />
-                </div>
-              </div>
-
-              {/* Opponent Side */}
-              <motion.div
-                className="flex flex-col items-center"
-                initial={{ x: 100, opacity: 0 }}
-                animate={{
-                  x: 0,
-                  opacity: playerIsWinner ? 0.3 : 1,
-                  scale: playerIsWinner ? 0.9 : 1,
-                }}
-                transition={{ duration: 0.5 }}
-              >
-                {opponent ? (
-                  <>
-                    <motion.img
-                      src={opponent.image}
-                      alt={opponent.name}
-                      className="h-20"
-                      animate={
-                        opponentIsWinner ? { y: [0, -10, 0, -5, 0] } : {}
-                      }
-                      transition={
-                        opponentIsWinner
-                          ? {
-                              duration: 0.6,
-                              repeat: Infinity,
-                              repeatType: "loop",
-                            }
-                          : {}
-                      }
-                    />
-                    <p className="font-semibold mt-1">{opponent.name}</p>
-                  </>
-                ) : (
-                  <p>Loading...</p>
-                )}
-              </motion.div>
-
-              {/* Result Text */}
-              <div className="text-sm font-medium w-40 text-left">{result}</div>
-            </div>
-          );
-        })}
-      </div>
-
+    <div className="flex flex-col items-center justify-center w-full max-w-4xl md:h-[calc(73vh)] border border-base-100 rounded-lg overflow-y-auto">
       <button
-        onClick={startBattle}
+        onClick={() => {
+          startBattle();
+          setLockArena(true);
+        }}
         disabled={
           selectedRoster.length === 0 ||
           selectedRoster.length !== opponents.length ||
+          battleStarted ||
           battleInProgress
         }
-        className="btn btn-primary mt-6 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        className="btn btn-primary absolute bottom-2 left-[43%] right-[43%] p-4 mx-auto text-xl font-semibold rounded-lg"
       >
         {battleInProgress ? "Battling..." : "Fight!"}
       </button>
+      <div ref={containerRef} className="text-center w-full md:h-[calc(72vh)]">
+        <div className="grid grid-cols-1 gap-5 w-full px-15 py-4">
+          {selectedRoster.map((player, index) => (
+            <ArenaEncounter
+              key={index}
+              player={player}
+              opponent={opponents[index]}
+              result={battleResults[index] || ""}
+              hp={hpStages[index] ?? 100}
+              winner={winnerSides[index]}
+            />
+          ))}
+        </div>
+
+        <ScoreModalForm
+          isOpen={modalOpen}
+          onClose={() => {
+            setModalOpen(false);
+            resetBattle();
+            setLockArena(false); // unlock after modal
+          }}
+          score={finalScore}
+          onSubmit={(username) => {
+            createScore({ username, score: finalScore });
+            console.log("Submitting score for", username);
+            setModalOpen(false);
+            resetBattle();
+            setLockArena(false); // unlock after modal
+          }}
+        />
+      </div>
     </div>
   );
 };

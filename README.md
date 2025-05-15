@@ -26,22 +26,12 @@ A full-featured Pokédex-style FE web application built with **React**, **Tailwi
 
 ---
 
-## Folder Structure
-
-src/
-├── assets/ # Pokémon icons and UI images
-├── components/ # UI building blocks (Navbar, PokeCard, etc.)
-├── context/ # RosterContext for global state
-├── hooks/ # Custom hooks (e.g. usePokemon)
-├── layout/ # MainLayout with Navbar + Footer
-├── pages/ # Route views (Home, Roster, Details, Battle)
-└── App.jsx # Router setup
-
 ## Instructions of use
 
 clone the repository
 
 npm i
+npm i framer-motion
 
 create an .env file with
 

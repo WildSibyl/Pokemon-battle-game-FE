@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { usePokemon } from "../hooks/usePokeData";
 import { useBattle } from "../context/BattleContext";
-import questionMark from "../assets/questionmark.png"; // Assuming you have a question mark image
+import questionMark from "../assets/questionmark.png";
 
 const getRandomId = () => Math.floor(Math.random() * 150) + 1; //min 1, max 1024
 
@@ -9,7 +9,7 @@ const RandomOpponent = ({ onReady }) => {
   // Generate the random ID only once on initial render
   const [pokeId] = useState(() => getRandomId());
   const { pokedata, loading, error } = usePokemon(pokeId);
-  const { battleStarted } = useBattle();
+  const { battleStarted, lockArena } = useBattle();
 
   useEffect(() => {
     if (pokedata && onReady) {
@@ -28,11 +28,6 @@ const RandomOpponent = ({ onReady }) => {
   if (error) return <p className="text-red-500">Error: {error.message}</p>;
   if (!pokedata) return null; // fallback safety
 
-  const imageSrc = battleStarted
-    ? pokedata.sprites.other["official-artwork"].front_default ||
-      pokedata.sprites.front_default
-    : questionMark;
-
   return (
     <div
       className={`flip-card w-32 h-40 relative ${
@@ -49,7 +44,11 @@ const RandomOpponent = ({ onReady }) => {
           />
         </div>
         {/* Back */}
-        <div className="flip-back bg-base-100 rounded-lg p-2 flex flex-col items-center justify-center transform hover:scale-105 transition-transform">
+        <div
+          className={`flip-back rounded-lg p-2 flex flex-col items-center justify-center transform hover:scale-105 transition-transform ${
+            lockArena ? "pointer-events-none bg-gray-300" : "bg-base-100"
+          }`}
+        >
           <img
             src={pokedata.sprites.other["official-artwork"].front_default}
             alt={pokedata.name}
