@@ -55,10 +55,19 @@ const Arena = () => {
     }
   }, [battleInProgress, battleResults, selectedRoster]);
 
+  const resetBattle = () => {
+    setBattleStarted(false);
+    setBattleInProgress(false);
+    setSelectedRoster([]);
+    setOpponents([]);
+    setBattleResults([]);
+    setHpStages([]);
+    setWinnerSides([]);
+    setFinalScore(0);
+  };
+
   return (
     <div className="text-center">
-      <h2 className="text-xl font-bold mb-4">Battle Arena</h2>
-
       <div className="grid grid-cols-1 gap-6">
         {selectedRoster.map((player, index) => (
           <BattleMatch
@@ -87,11 +96,16 @@ const Arena = () => {
 
       <ScoreModalForm
         isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => {
+          setModalOpen(false);
+          resetBattle();
+        }}
         score={finalScore}
         onSubmit={(username) => {
           createScore({ username, score: finalScore });
+          console.log("Submitting score for", username);
           setModalOpen(false);
+          resetBattle();
         }}
       />
     </div>
