@@ -30,13 +30,20 @@ A full-featured Pokédex-style FE web application built with **React**, **Tailwi
 
 ## Instructions of use
 
-clone the repository
+1. Clone the repository
 
-npm i
+git clone <repo-url>
+cd <repo-folder>
+
+2. Install dependencies
+
+npm install
 npm i framer-motion
 
-create an .env file with
+3. Set up environment variables
 
-VITE_APP_POKEMON_BATTLE_API_URL= <your url connection>
+create an .env file and add:
+
+VITE_APP_POKEMON_BATTLE_API_URL=your_url_connection
 
 Have fun catching them all!
