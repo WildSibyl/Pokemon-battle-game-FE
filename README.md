@@ -1,5 +1,7 @@
 # PokéBattle 💥
 
+Find it on Render: https://pokemon-battle-game-zbom.onrender.com/
+
 A full-featured Pokédex-style FE web application built with **React**, **Tailwind CSS**, and the **PokéAPI**. Users can browse Pokémon, view their stats, add them to a personal roster (favorites), and prepare for battles.
 
 ---
@@ -35,4 +37,6 @@ npm i framer-motion
 
 create an .env file with
 
-VITE_APP_POKEMON_BATTLE_API_URL=http://localhost:8080
+VITE_APP_POKEMON_BATTLE_API_URL= <your url connection>
+
+Have fun catching them all!
